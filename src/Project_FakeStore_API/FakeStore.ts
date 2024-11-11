@@ -1,6 +1,5 @@
 const URLProducts = "https://fakestoreapi.com/products";
 
-// HTMLElemente ziehen
 const searchInput = document.querySelector("#searchInput") as HTMLInputElement
 const selectInput = document.querySelector("#selectInput") as HTMLSelectElement
 const electronicsBtn = document.querySelector("#electronicsBtn") as HTMLButtonElement
@@ -17,7 +16,6 @@ console.log(mensClothingBtn);
 console.log(womensClothingBtn);
 console.log(cardWrapper);
 
-// Type erstellen
 type TProduct = {
     id: number,
     title: string,
@@ -53,13 +51,29 @@ const displayProducts = (products: TProduct[]): void => {
         productCard.innerHTML = `
             <img src="${product.image}" alt="${product.title}">
                 <h2>${product.title}</h2>
-                <p>${product.price.toFixed(2)}</p>
+                <p>€ ${product.price.toFixed(2)}</p>
                 <button>Add to cart</button>
                 `;
                 cardWrapper.appendChild(productCard);
             });
         };
-        
+
+const filteredByCategory = (category: string): void => {
+    fetch(URLProducts)
+    .then(response => response.json())
+    .then(products => {
+        const filteredProducts = products.filter((product: TProduct) => product.category === category);
+        displayProducts(filteredProducts);
+    }).catch(err => console.error("fetching products failed", err));
+};
+
+electronicsBtn?.addEventListener('click', () => filteredByCategory('electronics'));
+jewelleryBtn?.addEventListener('click', () => filteredByCategory('jewelery'));
+// category 'jewelery' muss mit falscher Schreibung aus Datenbank übernommen werden, sonst wird es nicht erkannt
+mensClothingBtn?.addEventListener('click', () => filteredByCategory("men's clothing"));
+womensClothingBtn?.addEventListener('click', () => filteredByCategory("women's clothing"));
+// "women's und men's clothing": auf single und double quotes achten, sonst wird es nicht erkannt
+    
 
 
 
